@@ -21,6 +21,9 @@ class Tensor:
     def set_creator(self, func):
         self.creator = func
 
+    def zero_grad(self):
+        self.grad = None
+
     def backward(self):
         if self.grad is None:
             self.grad = np.ones_like(self.data)
