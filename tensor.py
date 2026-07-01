@@ -28,12 +28,13 @@ class Tensor:
         funcs = [self.creator]
         while funcs:
             f = funcs.pop()
-            x, y = f.input, f.output
-            x.grad = f.backward(y.grad)
+            dys = [output.grad for output in f.outputs]
+            dxs = f.backward(*dys)
+            if not isinstance(dxs, tuple):
+                dxs = (dxs,)
 
-            if x.creator is not None:
-                funcs.append(x.creator)
+            for x, dx in zip(f.inputs, dxs):
+                x.grad = dx
 
-
-if __name__ == "__main__":
-    pass
+                if x.creator is not None:
+                    funcs.append(x.creator)
