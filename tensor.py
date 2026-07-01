@@ -34,7 +34,20 @@ class Tensor:
                 dxs = (dxs,)
 
             for x, dx in zip(f.inputs, dxs):
-                x.grad = dx
+                # 重复变量梯度覆盖
+                if x.grad is None:
+                    x.grad = dx
+                else:
+                    x.grad = x.grad + dx
 
                 if x.creator is not None:
                     funcs.append(x.creator)
+
+
+if __name__ == "__main__":
+    list1 = ["a", "b", "c"]
+    list2 = (1,)
+
+    for i, j in zip(list1, list2):
+        print(i)
+        print(j)
